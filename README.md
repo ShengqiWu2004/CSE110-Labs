@@ -1,2 +1,2 @@
-# CSE110-Lab-2
+# CSE110-Labs
 Lab Exercise for Shengqi &amp; Vivian
