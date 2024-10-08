@@ -2,8 +2,9 @@ import './App.css';
 import React, { useState, useEffect, useContext } from 'react';
 import { Label, Note } from "./types"; // Import the Label type from the appropriate module
 import { dummyNotesList } from "./constants"; // Import the dummyNotesList from the appropriate module
-import {ClickCounter} from "./heartButton"
 import 'font-awesome/css/font-awesome.min.css' // For the Heart Button
+import { ThemeContext, themes } from "./themeContext";
+import ToggleTheme from './hooksExercise';
 function App() {
   const [notes,setNotes] = useState(dummyNotesList) ;
   const [noteCount, setNoteCount] = useState(7);
@@ -31,6 +32,8 @@ function App() {
     favorite: false,
   };
  const [createNote, setCreateNote] = useState(initialNote);
+ const [bc,setBc] = useState('');
+ const [cbc,setCbc] = useState('');
  const createNoteHandler=(e:React.FormEvent)=>{
   e.preventDefault();
   setNoteCount(noteCount+1);
@@ -39,13 +42,16 @@ function App() {
   setCreateNote(initialNote);
  }
  //const [selectedNote, setSelectedNote] = useState<Note>(initialNote);
-
+ const theme = useContext(ThemeContext);
  return (
   <div className='app-container'>
   <form className="note-form" onSubmit={(e)=>createNoteHandler(e)}>
     <div>
       <input
         placeholder="Note Title" value = {createNote.title}
+        style = {{backgroundColor: bc}}
+        onFocus= {()=>(setBc('#e0f7fa'))}
+        onBlur = {()=>(setBc(''))}
         onChange={(event) =>
           setCreateNote({ ...createNote, title: event.target.value })}
         required>
@@ -54,6 +60,9 @@ function App() {
 
     <div>
       <textarea placeholder = "Note Content" value = {createNote.content}
+        style = {{backgroundColor: cbc}}
+        onFocus= {()=>(setCbc('#e0f7fa'))}
+        onBlur = {()=>(setCbc(''))}
         onChange={(event) =>
           setCreateNote({ ...createNote, content: event.target.value })}
         required>
@@ -90,6 +99,9 @@ function App() {
            <p contentEditable="true"> {note.label} </p>
          </div>
        ))}
+     </div>
+     <div className='Toggle-Theme'>
+      <ToggleTheme/>
      </div>
      <div className='like-list'>
        <h2>List of Favorites</h2>
