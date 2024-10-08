@@ -3,8 +3,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Label, Note } from "./types"; // Import the Label type from the appropriate module
 import { dummyNotesList } from "./constants"; // Import the dummyNotesList from the appropriate module
 import 'font-awesome/css/font-awesome.min.css' // For the Heart Button
-import { ThemeContext, themes } from "./themeContext";
-import ToggleTheme from './hooksExercise';
 function App() {
   const [notes,setNotes] = useState(dummyNotesList) ;
   const [noteCount, setNoteCount] = useState(7);
@@ -41,10 +39,18 @@ function App() {
   setNotes([...notes,newNote]);
   setCreateNote(initialNote);
  }
- //const [selectedNote, setSelectedNote] = useState<Note>(initialNote);
- const theme = useContext(ThemeContext);
+ const [theme,setTheme] = useState(false);
+ const toggleTheme = ()=>{
+  setTheme(prevTheme => !prevTheme);
+ };
  return (
-  <div className='app-container'>
+  <div className='app-container'
+  style={{
+    backgroundColor: theme ? '#222' : 'lightgray',
+    color: theme ? '#fff' : '#000',
+    minHeight: '100vh',
+    padding: '25px',
+  }}>
   <form className="note-form" onSubmit={(e)=>createNoteHandler(e)}>
     <div>
       <input
@@ -87,7 +93,11 @@ function App() {
        {notes.map((note) => (
          <div
            key={note.id}
-           className="note-item">
+           className="note-item"
+           style={{
+            backgroundColor: theme ? 'darkgray' : 'white',
+            color: theme ? '#fff' : 'black',
+          }}>
            <div className="notes-header">
            <button onClick={()=>handleLikeClick(note.id)}> 
             <i className = "fa fa-heart" style = {{color: note.favorite ? 'red' : '#D3D3D3'}}/> 
@@ -101,7 +111,7 @@ function App() {
        ))}
      </div>
      <div className='Toggle-Theme'>
-      <ToggleTheme/>
+      <button onClick={toggleTheme}>Toggle Theme</button>
      </div>
      <div className='like-list'>
        <h2>List of Favorites</h2>
