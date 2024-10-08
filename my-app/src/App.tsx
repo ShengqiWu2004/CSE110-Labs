@@ -43,13 +43,14 @@ function App() {
  const toggleTheme = ()=>{
   setTheme(prevTheme => !prevTheme);
  };
+ useEffect(()=>{
+  document.body.style.backgroundColor = theme ? '#222': 'lightgray';
+ },[theme]);
  return (
   <div className='app-container'
   style={{
     backgroundColor: theme ? '#222' : 'lightgray',
     color: theme ? '#fff' : '#000',
-    minHeight: '100vh',
-    padding: '25px',
   }}>
   <form className="note-form" onSubmit={(e)=>createNoteHandler(e)}>
     <div>
