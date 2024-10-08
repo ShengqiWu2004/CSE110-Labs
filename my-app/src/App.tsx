@@ -48,6 +48,7 @@ function App() {
   style={{
     backgroundColor: theme ? '#222' : 'lightgray',
     color: theme ? '#fff' : '#000',
+    minHeight: '100vh',
     padding: '25px',
   }}>
   <form className="note-form" onSubmit={(e)=>createNoteHandler(e)}>
