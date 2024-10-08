@@ -6,6 +6,7 @@ import {ClickCounter} from "./heartButton"
 import 'font-awesome/css/font-awesome.min.css' // For the Heart Button
 function App() {
   const [notes,setNotes] = useState(dummyNotesList) ;
+  const [noteCount, setNoteCount] = useState(7);
   const handleLikeClick = (noteId: number) => {
     // flip favorate
     setNotes(notes => 
@@ -14,27 +15,64 @@ function App() {
       )
     );
   };
+  const handleDeleteClick = (noteId: number) => {
+    // flip favorate
+    setNotes(notes => 
+      notes.filter(note => 
+        note.id != noteId 
+      )
+    );
+  };
   const initialNote = {
     id: -1,
     title: "",
     content: "",
     label: Label.other,
+    favorite: false,
   };
  const [createNote, setCreateNote] = useState(initialNote);
+ const createNoteHandler=(e:React.FormEvent)=>{
+  e.preventDefault();
+  setNoteCount(noteCount+1);
+  const newNote = {...createNote, id: noteCount as number}
+  setNotes([...notes,newNote]);
+  setCreateNote(initialNote);
+ }
+ //const [selectedNote, setSelectedNote] = useState<Note>(initialNote);
+
  return (
-   <div className='app-container'>
-    <form className="note-form">
-       <div><input placeholder="Note Title"></input></div>
+  <div className='app-container'>
+  <form className="note-form" onSubmit={(e)=>createNoteHandler(e)}>
+    <div>
+      <input
+        placeholder="Note Title" value = {createNote.title}
+        onChange={(event) =>
+          setCreateNote({ ...createNote, title: event.target.value })}
+        required>
+      </input>
+    </div>
 
-       <div><textarea placeholder='Note Content'></textarea></div>
-       <select name = "label" id = "label">
-                <option value = "Personal">Personal</option>
-                <option value = "Work">Work</option>
-                <option value = "Study">Study</option>
-                <option value = "Other">Other</option>
-        </select>
+    <div>
+      <textarea placeholder = "Note Content" value = {createNote.content}
+        onChange={(event) =>
+          setCreateNote({ ...createNote, content: event.target.value })}
+        required>
+      </textarea>
+    </div>
 
-       <div><button type="submit">Create Note</button></div>
+    <div>
+     <select value = {createNote.label}
+       onChange={(event) =>
+         setCreateNote({ ...createNote, label: event.target.value as Label})}
+       required>
+       <option value={Label.personal}>Personal</option>
+       <option value={Label.study}>Study</option>
+       <option value={Label.work}>Work</option>
+       <option value={Label.other}>Other</option>
+     </select>
+    </div>
+
+    <div><button type="submit">Create Note</button></div>
     </form>
     <div className="notes-grid">
        {notes.map((note) => (
@@ -45,11 +83,11 @@ function App() {
            <button onClick={()=>handleLikeClick(note.id)}> 
             <i className = "fa fa-heart" style = {{color: note.favorite ? 'red' : '#D3D3D3'}}/> 
             </button>
-             <button>x</button>
+             <button onClick={()=>handleDeleteClick(note.id)}>x</button>
            </div>
-           <h2> {note.title} </h2>
-           <p> {note.content} </p>
-           <p> {note.label} </p>
+           <h2 contentEditable="true"> {note.title} </h2>
+           <p contentEditable="true"> {note.content} </p>
+           <p contentEditable="true"> {note.label} </p>
          </div>
        ))}
      </div>
