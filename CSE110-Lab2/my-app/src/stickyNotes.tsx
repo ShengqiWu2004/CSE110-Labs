@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, FormEvent } from 'react';
 import { Label, Note } from "./types"; // Import the Label type from the appropriate module
 import { dummyNotesList } from "./constants"; // Import the dummyNotesList from the appropriate module
 import 'font-awesome/css/font-awesome.min.css' // For the Heart Button
+import { title } from 'process';
 
 export const StickyNotes = () =>{
 const [notes,setNotes] = useState(dummyNotesList) ;
@@ -29,6 +30,42 @@ const [notes,setNotes] = useState(dummyNotesList) ;
     label: Label.other,
     favorite: false,
   };
+//const [selectNote, setSelectNote] = useState(initialNote)
+const handleSelectedNote = (thisNote:Note,e:React.SyntheticEvent<HTMLElement>,num:number)=>{
+    e.preventDefault();
+    const editcontent = e.currentTarget.textContent as string;
+    let newNote: Note;
+    if(num == 0){//title
+      newNote = ({...thisNote,title:editcontent});
+    }else{
+      newNote = ({...thisNote,content:editcontent});
+    }
+    setNotes(notes => 
+      notes.map(note => 
+        note.id === thisNote.id ?  newNote : note
+      )
+    );
+
+}
+//   const handleSelectedNote = (e: React.ChangeEvent<HTMLTextAreaElement>) =>{
+//     e.preventDefault();
+//     if(!selectNote){
+//         return
+//     }
+//     const newNote = {
+
+//     };
+
+//     setSelectNote({...selectNote, content: e.target.value})
+
+//   }
+
+//   // useEffect
+//   useEffect() = {
+    
+//     setNotes()
+//   }
+
  const [createNote, setCreateNote] = useState(initialNote);
  const [bc,setBc] = useState('');
  const [cbc,setCbc] = useState('');
@@ -95,6 +132,7 @@ const [notes,setNotes] = useState(dummyNotesList) ;
          <div
            key={note.id}
            className="note-item"
+           data-testid = "note-test"
            style={{
             backgroundColor: theme ? 'darkgray' : 'white',
             color: theme ? '#fff' : 'black',
@@ -103,11 +141,11 @@ const [notes,setNotes] = useState(dummyNotesList) ;
            <button onClick={()=>handleLikeClick(note.id)}> 
             <i className = "fa fa-heart" style = {{color: note.favorite ? 'red' : '#D3D3D3'}}/> 
             </button>
-             <button onClick={()=>handleDeleteClick(note.id)}>x</button>
+             <button onClick={()=>handleDeleteClick(note.id)} data-testid = {`note-delbutton-${note.id}`}>x</button>
            </div>
-           <h2 contentEditable="true"> {note.title} </h2>
-           <p contentEditable="true"> {note.content} </p>
-           <p contentEditable="true"> {note.label} </p>
+           <h2 contentEditable="true" suppressContentEditableWarning={true} data-testid = {`note-title-${note.id}`} onBlur={(event)=>handleSelectedNote(note,event,0)}>{note.title}</h2> 
+           <p contentEditable="true" suppressContentEditableWarning={true} onBlur={(event)=>handleSelectedNote(note,event,1)} > {note.content} </p>
+           <p contentEditable="true" suppressContentEditableWarning={true}> {note.label} </p>
          </div>
        ))}
      </div>
